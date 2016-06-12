@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Rider AI Admin | Contacts</title>
+  </head>
+  <body>
+    <h1>Messages</h1>
+    <ul>
+    {% for contact in contacts %}
+      <li>
+        <p>{{ contact.message }}</p>
+        <p> Name: {{ contact.name }} | Email: {{ contact.email_address }}</p>
+        <p>{{ contact.created_timestamp }}</p>
+        <br>
+      </li>
+    {% else %}
+      <li><em>Unbelievable.  No entries here so far</em>
+    {% endfor %}
+    </ul>
+  </body>
+</html>
