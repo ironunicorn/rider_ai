@@ -3,25 +3,22 @@ import { connect } from 'react-redux'
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
+import FileInput from '../components/FileInput'
 
 class RiderMLApp extends Component {
   constructor(props) {
     super(props)
     this.state = {
       finished: false,
-      stepIndex: 0
+      stepIndex: 0,
+      learn: "",
+      predict: ""
     }
     this.formData = new FormData()
   }
 
-  onSubmit(e) {
-    e.preventDefault()
-    var formData = new FormData(document.querySelector("form"))
-  }
-
-  handleNext() {
+  handleNext(ref) {
     const {stepIndex} = this.state
-    debugger
     this.setState({
       stepIndex: stepIndex + 1,
       finished: stepIndex >= 2,
@@ -35,34 +32,89 @@ class RiderMLApp extends Component {
     }
   }
 
+  addFile(name, file) {
+    if (!file) return
+    if (this.formData.get(name)) this.formData.delete(name)
+    this.formData.append(name, file)
+    const toUpdate = {}
+    toUpdate[name] = file.name
+    this.setState(toUpdate)
+  }
+
+  handleLearn() {
+    var oReq = new XMLHttpRequest();
+    oReq.open("POST", "api/linear_regression", true);
+    oReq.onload = function(oEvent) {
+      if (oReq.status == 200) {
+        console.log("Uploaded!")
+      } else {
+        console.log("fail")
+      }
+    };
+
+    oReq.send(this.formData);
+  }
+
   getStepContent(stepIndex) {
     switch (stepIndex) {
       case 0:
         return (
-          <form style={{textAlign: "center"}} >
-            <input type="file" name="ml-learn" id="ml-learn" className="inputfile" ref="learn"/>
-            <label htmlFor="ml-learn">
-            <RaisedButton
-              label="Upload"
-              secondary={true}
-            /></label>
-          </form>
+          <div>
+            <FileInput id="learn"
+                       fileName={this.state.learn}
+                       addFile={this.addFile.bind(this)} />
+            <div style={{marginTop: 12}}>
+              <FlatButton
+                label="Back"
+                disabled={stepIndex === 0}
+                onTouchTap={this.handlePrev.bind(this)}
+                style={{marginRight: 12}}
+              />
+              <RaisedButton
+                label={stepIndex === 2 ? 'Finish' : 'Next'}
+                primary={true}
+                onTouchTap={this.handleNext.bind(this)}
+              />
+            </div>
+          </div>
         )
       case 1:
         return (
-          <form style={{textAlign: "center"}} >
-            <input type="file" name="ml-predict" id="ml-predict" className="inputfile" ref="predict" />
-            <label htmlFor="ml-predict">
-            <RaisedButton
-              label="Upload"
-              secondary={true}
-            /></label>
-          </form>
+          <div>
+            <FileInput id="predict"
+                       fileName={this.state.predict}
+                       addFile={this.addFile.bind(this)} />
+            <div style={{marginTop: 12}}>
+              <FlatButton
+                label="Back"
+                disabled={stepIndex === 0}
+                onTouchTap={this.handlePrev.bind(this)}
+                style={{marginRight: 12}}
+              />
+              <RaisedButton
+                label='Next'
+                primary={true}
+                onTouchTap={this.handleNext.bind(this)}
+              />
+            </div>
+          </div>
         )
       case 2:
         return (
-          <div style={{textAlign: "center"}} >
-            <RaisedButton label="Learn" primary={true} />
+          <div>
+            <div style={{textAlign: "center", marginTop: 12}} >
+              <FlatButton
+                label="Back"
+                onTouchTap={this.handlePrev.bind(this)}
+                disabled={stepIndex === 0}
+                style={{marginRight: 12}}
+              />
+              <RaisedButton
+                label="Learn"
+                primary={true}
+                onTouchTap={this.handleLearn.bind(this)}
+              />
+            </div>
           </div>
         )
       default:
@@ -73,52 +125,23 @@ class RiderMLApp extends Component {
 
   render() {
     const {finished, stepIndex} = this.state
-   const contentStyle = {margin: '0 16px'}
+    const contentStyle = {margin: '0 16px'}
 
-   return (
-     <div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
-       <Stepper activeStep={stepIndex}>
-         <Step>
-           <StepLabel>Choose data to learn from</StepLabel>
-         </Step>
-         <Step>
-           <StepLabel>Choose data with missing dimensions to predict</StepLabel>
-         </Step>
-         <Step>
-           <StepLabel>Process!</StepLabel>
-         </Step>
-       </Stepper>
-       <div style={contentStyle}>
-         {finished ? (
-           <p>
-             <a
-               href="#"
-               onClick={(event) => {
-                 event.preventDefault()
-                 this.setState({stepIndex: 0, finished: false})
-               }}
-             >
-               Click here
-             </a> to reset the example.
-           </p>
-         ) : (
-           <div>
-             <div>{this.getStepContent(stepIndex)}</div>
-             <div style={{marginTop: 12}}>
-               <FlatButton
-                 label="Back"
-                 disabled={stepIndex === 0}
-                 onTouchTap={this.handlePrev.bind(this)}
-                 style={{marginRight: 12}}
-               />
-               <RaisedButton
-                 label={stepIndex === 2 ? 'Finish' : 'Next'}
-                 primary={true}
-                 onTouchTap={this.handleNext.bind(this)}
-               />
-             </div>
-           </div>
-         )}
+    return (
+      <div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
+        <Stepper activeStep={stepIndex} linear={false}>
+          <Step>
+            <StepLabel>Choose data to learn from</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Choose data with missing dimensions to predict</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Process!</StepLabel>
+          </Step>
+        </Stepper>
+        <div style={contentStyle}>
+          <div>{this.getStepContent(stepIndex)}</div>
        </div>
      </div>
     )

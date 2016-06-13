@@ -1,5 +1,6 @@
 """API routes for external users."""
 from flask import Blueprint, request, jsonify
+import csv
 import numpy
 from models.contact import Contact
 from riderml.regression.SGD_regressor import SGD_regressor
@@ -22,23 +23,26 @@ def post_contact():
     return jsonify({"success": success}), status
 
 
-@api.route('/linear_regression', methods=['GET'])
+@api.route('/linear_regression', methods=['POST'])
 def linear_regression():
-    print(str(request.to_dict()))
-    x = numpy.zeros([10, 1])
-    x[:, 0] = range(len(x))
+    file = request.files['learn'].read()
+    learn = csv.DictReader(file)
+    for row in learn:
+        print str(row)
+    # x = numpy.zeros([10, 1])
+    # x[:, 0] = range(len(x))
+    #
+    # y = numpy.zeros([10, 1])
+    # y[:, 0] = range(len(x))
+    # y *= 2
+    #
+    # sgd_regressor = SGD_regressor()
+    # sgd_regressor.fit(x, y, 100)
+    #
+    # data = [6, 7, 8, 9, 10]
+    # y_guesses = sgd_regressor.predict(numpy.array(data).T)
+    #
+    # flattened_y_guesses = [item for sublist in y_guesses for item in sublist]
+    # answer = zip(data, flattened_y_guesses)
 
-    y = numpy.zeros([10, 1])
-    y[:, 0] = range(len(x))
-    y *= 2
-
-    sgd_regressor = SGD_regressor()
-    sgd_regressor.fit(x, y, 100)
-
-    data = [6, 7, 8, 9, 10]
-    y_guesses = sgd_regressor.predict(numpy.array(data).T)
-
-    flattened_y_guesses = [item for sublist in y_guesses for item in sublist]
-    answer = zip(data, flattened_y_guesses)
-
-    return jsonify({"prediction": answer})
+    return jsonify({"prediction": "stuff"})
