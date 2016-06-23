@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { processData } from '../actions/mlAction'
 import { Step, Stepper, StepLabel } from 'material-ui/Stepper'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
@@ -42,17 +43,9 @@ class RiderMLApp extends Component {
   }
 
   handleLearn() {
-    var oReq = new XMLHttpRequest();
-    oReq.open("POST", "api/linear_regression", true);
-    oReq.onload = function(oEvent) {
-      if (oReq.status == 200) {
-        console.log("Uploaded!")
-      } else {
-        console.log("fail")
-      }
-    };
-
-    oReq.send(this.formData);
+    const { dispatch } = this.props
+    debugger
+    dispatch(processData(this.formData))
   }
 
   getStepContent(stepIndex) {

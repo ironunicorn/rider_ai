@@ -32769,7 +32769,7 @@
 	        isPosting: false,
 	        didInvalidate: false,
 	        result: action.result,
-	        lastUpdated: receivedAt
+	        lastUpdated: action.receivedAt
 	      });
 	    default:
 	      return state;
@@ -32780,18 +32780,14 @@
 
 /***/ },
 /* 318 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.RECEIVE_DATA_RESULT = exports.REQUEST_PROCESS_DATA = undefined;
 	exports.processData = processData;
-
-	var _axios = __webpack_require__(299);
-
 	var REQUEST_PROCESS_DATA = exports.REQUEST_PROCESS_DATA = 'REQUEST_PROCESS_DATA';
 	var RECEIVE_DATA_RESULT = exports.RECEIVE_DATA_RESULT = 'RECEIVE_DATA_RESULT';
 
@@ -32813,13 +32809,18 @@
 	function processData(data) {
 	  return function (dispatch) {
 	    dispatch(requestProcessData(data));
-	    return (0, _axios.post)('/api/contact', payload, {
-	      headers: { 'Content-type': 'application/json' }
-	    }).then(function (response) {
-	      dispatch(receiveDataResult(response));
-	    }).catch(function (response) {
-	      dispatch(receiveDataResult(response));
-	    });
+	    var oReq = new XMLHttpRequest();
+	    oReq.open("POST", "api/linear_regression", true);
+	    oReq.onload = function (oEvent) {
+	      if (oReq.status == 200) {
+	        console.log(oReq.response);
+	        dispatch(receiveDataResult(JSON.parse(oReq.response)));
+	      } else {
+	        console.log("fail :(");
+	      }
+	    };
+
+	    oReq.send(data);
 	  };
 	}
 
@@ -36931,6 +36932,8 @@
 
 	var _reactRedux = __webpack_require__(261);
 
+	var _mlAction = __webpack_require__(318);
+
 	var _Stepper = __webpack_require__(364);
 
 	var _RaisedButton = __webpack_require__(374);
@@ -37003,17 +37006,10 @@
 	  }, {
 	    key: 'handleLearn',
 	    value: function handleLearn() {
-	      var oReq = new XMLHttpRequest();
-	      oReq.open("POST", "api/linear_regression", true);
-	      oReq.onload = function (oEvent) {
-	        if (oReq.status == 200) {
-	          console.log("Uploaded!");
-	        } else {
-	          console.log("fail");
-	        }
-	      };
+	      var dispatch = this.props.dispatch;
 
-	      oReq.send(this.formData);
+	      debugger;
+	      dispatch((0, _mlAction.processData)(this.formData));
 	    }
 	  }, {
 	    key: 'getStepContent',
@@ -37092,8 +37088,6 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
-
 	      var _state = this.state;
 	      var finished = _state.finished;
 	      var stepIndex = _state.stepIndex;
@@ -37137,22 +37131,7 @@
 	        _react2.default.createElement(
 	          'div',
 	          { style: contentStyle },
-	          finished ? _react2.default.createElement(
-	            'p',
-	            null,
-	            _react2.default.createElement(
-	              'a',
-	              {
-	                href: '#',
-	                onClick: function onClick(event) {
-	                  event.preventDefault();
-	                  _this2.setState({ stepIndex: 0, finished: false });
-	                }
-	              },
-	              'Reset.'
-	            ),
-	            ' This is where the graphs will go.'
-	          ) : _react2.default.createElement(
+	          _react2.default.createElement(
 	            'div',
 	            null,
 	            this.getStepContent(stepIndex)

@@ -1,5 +1,3 @@
-import { post } from 'axios'
-
 export const REQUEST_PROCESS_DATA = 'REQUEST_PROCESS_DATA'
 export const RECEIVE_DATA_RESULT = 'RECEIVE_DATA_RESULT'
 
@@ -21,14 +19,17 @@ function receiveDataResult(result) {
 export function processData(data) {
   return dispatch => {
     dispatch(requestProcessData(data))
-    return post('/api/contact', payload, {
-        headers: {'Content-type': 'application/json'}
-      })
-      .then((response) => {
-        dispatch(receiveDataResult(response))
-      })
-      .catch((response) => {
-        dispatch(receiveDataResult(response))
-      })
+    var oReq = new XMLHttpRequest();
+    oReq.open("POST", "api/linear_regression", true);
+    oReq.onload = function(oEvent) {
+      if (oReq.status == 200) {
+        console.log(oReq.response)
+        dispatch(receiveDataResult(JSON.parse(oReq.response)))
+      } else {
+        console.log("fail :(")
+      }
+    };
+
+    oReq.send(data)
   }
 }

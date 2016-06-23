@@ -21,7 +21,7 @@ function machineLearning(state = {
         isPosting: false,
         didInvalidate: false,
         result: action.result,
-        lastUpdated: receivedAt
+        lastUpdated: action.receivedAt
       })
     default:
       return state
