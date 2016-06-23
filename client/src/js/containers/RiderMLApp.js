@@ -44,7 +44,6 @@ class RiderMLApp extends Component {
 
   handleLearn() {
     const { dispatch } = this.props
-    debugger
     dispatch(processData(this.formData))
   }
 
