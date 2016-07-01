@@ -5,6 +5,7 @@ import { Step, Stepper, StepLabel } from 'material-ui/Stepper'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
 import FileInput from '../components/FileInput'
+import FieldBreakdown from '../components/FieldBreakdown'
 
 class RiderMLApp extends Component {
   constructor(props) {
@@ -13,7 +14,9 @@ class RiderMLApp extends Component {
       finished: false,
       stepIndex: 0,
       learn: "",
-      predict: ""
+      predict: "",
+      learnHeaders: [],
+      predictHeaders: []
     }
     this.formData = new FormData()
   }
@@ -42,6 +45,12 @@ class RiderMLApp extends Component {
     this.setState(toUpdate)
   }
 
+  addFields(name, headers) {
+    const toChange = {}
+    toChange[name] = headers
+    this.setState(toChange)
+  }
+
   handleLearn() {
     const { dispatch } = this.props
     dispatch(processData(this.formData))
@@ -54,6 +63,7 @@ class RiderMLApp extends Component {
           <div>
             <FileInput id="learn"
                        fileName={this.state.learn}
+                       addFields={this.addFields.bind(this, "learnHeaders")}
                        addFile={this.addFile.bind(this)} />
             <div style={{marginTop: 12}}>
               <FlatButton
@@ -75,6 +85,7 @@ class RiderMLApp extends Component {
           <div>
             <FileInput id="predict"
                        fileName={this.state.predict}
+                       addFields={this.addFields.bind(this, "predictHeaders")}
                        addFile={this.addFile.bind(this)} />
             <div style={{marginTop: 12}}>
               <FlatButton
@@ -92,8 +103,17 @@ class RiderMLApp extends Component {
           </div>
         )
       case 2:
+        const { learnHeaders, predictHeaders } = this.state
+        const predictSet = new Set(predictHeaders)
+        const toLearn = learnHeaders.filter((field) => predictSet.has(field))
+        const toPredict = learnHeaders.filter((field) => !predictSet.has(field))
+
         return (
-          <div>
+          <div style={{width: '100%'}}>
+            <FieldBreakdown
+              toLearn={toLearn}
+              toPredict={toPredict}
+            />
             <div style={{textAlign: "center", marginTop: 12}} >
               <FlatButton
                 label="Back"
@@ -104,6 +124,7 @@ class RiderMLApp extends Component {
               <RaisedButton
                 label="Learn"
                 primary={true}
+                disabled={!toLearn.length}
                 onTouchTap={this.handleLearn.bind(this)}
               />
             </div>
