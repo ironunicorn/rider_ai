@@ -67,9 +67,12 @@ def linear_regression():
     sgd_regressor = SGD_regressor()
     sgd_regressor.fit(x, y, 100)
 
-    predict_x = [predict[column].tolist() for column in x_columns]
-    second_x = numpy.array(zip(*predict_x))
+    predict_x = zip(*[predict[column].tolist() for column in x_columns])
+    second_x = numpy.array(predict_x)
 
-    answer = sgd_regressor.predict(second_x).tolist()
+    y_results = sgd_regressor.predict(second_x).tolist()
 
-    return jsonify({"answer": answer})
+    return jsonify({"y_results": y_results,
+                    "x_results": predict_x,
+                    "y_fields": list(y_columns),
+                    "x_fields": list(x_columns)})

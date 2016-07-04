@@ -3,23 +3,19 @@ import {
 } from '../actions/mlAction'
 
 function machineLearning(state = {
-  isPosting: false,
-  didInvalidate: false,
-  data: [],
-  response: [],
-  result: []
+  learning: false,
+  data: {},
+  result: {}
 }, action) {
   switch (action.type) {
     case REQUEST_PROCESS_DATA:
       return Object.assign({}, state, {
-        isPosting: true,
-        didInvalidate: false,
+        learning: true,
         data: action.data
       })
     case RECEIVE_DATA_RESULT:
       return Object.assign({}, state, {
-        isPosting: false,
-        didInvalidate: false,
+        learning: false,
         result: action.result,
         lastUpdated: action.receivedAt
       })

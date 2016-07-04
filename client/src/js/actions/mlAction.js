@@ -24,8 +24,8 @@ export function processData(data) {
     oReq.open("POST", "api/linear_regression", true);
     oReq.onload = function(oEvent) {
       if (oReq.status == 200) {
-        console.log(oReq.response)
-        dispatch(receiveDataResult(JSON.parse(oReq.response)))
+        const answer = JSON.parse(oReq.response)
+        dispatch(receiveDataResult(answer))
       } else {
         console.log("fail :(")
       }
