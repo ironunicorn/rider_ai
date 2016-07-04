@@ -1,7 +1,7 @@
 """API routes for external users."""
 from flask import Blueprint, request, jsonify
-import csv
 import numpy
+import pandas
 from models.contact import Contact
 from riderml.regression.SGD_regressor import SGD_regressor
 
@@ -11,7 +11,16 @@ api = Blueprint('api', __name__)
 
 @api.route('/contact', methods=['POST'])
 def post_contact():
-    """Adds contact."""
+    """
+    Adds contact.
+
+    request body must specify as json:
+        name - name of contact.
+        email_address - email address of contact.
+        message - a message.
+    returns:
+        json success or failure plus corresponding http status.
+    """
     contact_request = request.get_json()
     try:
         contact = Contact(**contact_request)
@@ -23,32 +32,42 @@ def post_contact():
     return jsonify({"success": success}), status
 
 
-# @api.route('/linear_regression', methods=['POST'])
-@api.route('/linear_regression', methods=['GET'])
+@api.route('/linear_regression', methods=['POST'])
 def linear_regression():
-    # learn_file = request.files['learn'].read()
-    # learn = csv.DictReader(learn_file)
-    # for row in learn:
-    #     print str(row)
-    #
-    # predict_file = request.files['predict'].read()
-    # predict = csv.DictReader(predict_file)
-    # for row in predict:
-    #     print str(row)
-    x = numpy.zeros([10, 1])
-    x[:, 0] = range(len(x))
+    """
+    Applies gradient decsent linear regression algorithm to learn and then
+    predict two given CSV files.
 
-    y = numpy.zeros([10, 1])
-    y[:, 0] = range(len(x))
-    y *= 2
+    request body must contain two files as multipart file object:
+        learn - the file to learn with.
+        predict - the file to make predictions for.
+
+    returns:
+        the y values of the prediction.
+    """
+    learn_file = request.files['learn']
+    learn = pandas.read_csv(learn_file)
+    learn_headers = set(learn.columns.values)
+
+    predict_file = request.files['predict']
+    predict = pandas.read_csv(predict_file)
+    predict_headers = set(predict.columns.values)
+
+    x_columns = learn_headers & predict_headers
+    y_columns = learn_headers - predict_headers
+
+    x = [learn[column].tolist() for column in x_columns]
+    y = [learn[column].tolist() for column in y_columns]
+
+    x = numpy.array(zip(*x))
+    y = numpy.array(zip(*y))
 
     sgd_regressor = SGD_regressor()
     sgd_regressor.fit(x, y, 100)
 
-    data = [6, 7, 8, 9, 10]
-    y_guesses = sgd_regressor.predict(numpy.array(data).T)
+    predict_x = [predict[column].tolist() for column in x_columns]
+    second_x = numpy.array(zip(*predict_x))
 
-    flattened_y_guesses = [item for sublist in y_guesses for item in sublist]
-    answer = zip(data, flattened_y_guesses)
+    answer = sgd_regressor.predict(second_x).tolist()
 
-    return jsonify({"x": str(x), "y": str(y), "answer": answer})
+    return jsonify({"answer": answer})
