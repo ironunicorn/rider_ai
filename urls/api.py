@@ -18,6 +18,7 @@ def post_contact():
         name - name of contact.
         email_address - email address of contact.
         message - a message.
+
     returns:
         json success or failure plus corresponding http status.
     """
@@ -43,18 +44,19 @@ def linear_regression():
         predict - the file to make predictions for.
 
     returns:
-        the y values of the prediction.
+        the y values of the prediction as a 2d array on success.
     """
-    learn_file = request.files['learn']
-    learn = pandas.read_csv(learn_file)
+    learn = pandas.read_csv(request.files['learn'])
     learn_headers = set(learn.columns.values)
 
-    predict_file = request.files['predict']
-    predict = pandas.read_csv(predict_file)
+    predict = pandas.read_csv(request.files['predict'])
     predict_headers = set(predict.columns.values)
 
     x_columns = learn_headers & predict_headers
     y_columns = learn_headers - predict_headers
+
+    if not x_columns or not y_columns:
+        return jsonify({"error": "You must have both x and y columns."}), 400
 
     x = [learn[column].tolist() for column in x_columns]
     y = [learn[column].tolist() for column in y_columns]

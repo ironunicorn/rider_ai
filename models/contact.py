@@ -1,3 +1,4 @@
+"""Model for messages submitted by users."""
 from app import db
 from datetime import datetime
 from sqlalchemy.orm import validates

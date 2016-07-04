@@ -1,5 +1,5 @@
-import unittest
 import json
+import unittest
 from app import app, db
 from urls.api import api
 
@@ -24,7 +24,7 @@ class APITestCase(unittest.TestCase):
                    "message": "Hey!"}
         response = self.test_client.post('/api/contact',
                                          data=json.dumps(contact),
-                                         content_type = 'application/json')
+                                         content_type='application/json')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
         self.assertTrue(data["success"])
@@ -34,7 +34,7 @@ class APITestCase(unittest.TestCase):
                    "email_address": "irene.foelschow@gmail.com"}
         response = self.test_client.post('/api/contact',
                                          data=json.dumps(contact),
-                                         content_type = 'application/json')
+                                         content_type='application/json')
         self.assertEqual(response.status_code, 500)
         data = json.loads(response.data)
         self.assertFalse(data["success"])
@@ -45,10 +45,32 @@ class APITestCase(unittest.TestCase):
                    "message": "Hey!"}
         response = self.test_client.post('/api/contact',
                                          data=json.dumps(contact),
-                                         content_type = 'application/json')
+                                         content_type='application/json')
         self.assertEqual(response.status_code, 500)
         data = json.loads(response.data)
         self.assertFalse(data["success"])
+
+    def test_linear_regression(self):
+        data = {'learn': open('tests/assets/iris.csv'),
+                'predict': open('tests/assets/iris2.csv')}
+        response = self.test_client.post('/api/linear_regression',
+                                         data=data)
+        data = json.loads(response.data)
+        self.assertTrue(len(data["answer"]))
+
+    def test_all_mismatched_headers_linear_regression(self):
+        data = {'learn': open('tests/assets/iris.csv'),
+                'predict': open('tests/assets/data.csv')}
+        response = self.test_client.post('/api/linear_regression',
+                                         data=data)
+        self.assertEqual(response.status_code, 400)
+
+    def test_no_mismatched_headers_linear_regression(self):
+        data = {'learn': open('tests/assets/iris.csv'),
+                'predict': open('tests/assets/iris.csv')}
+        response = self.test_client.post('/api/linear_regression',
+                                         data=data)
+        self.assertEqual(response.status_code, 400)
 
 
 if __name__ == '__main__':

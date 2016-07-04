@@ -12,9 +12,9 @@ from urls.admin import admin
 app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(admin, url_prefix='/admin')
 
-
-@app.route('/', methods=['GET'])
-def hello():
+@app.route('/', methods=['GET'], defaults={'path': ''})
+@app.route('/<path:path>', methods=['GET'])
+def hello(path):
     """Returns base template for homepage."""
 
     return render_template('base.html')

@@ -19,6 +19,7 @@ function receiveDataResult(result) {
 export function processData(data) {
   return dispatch => {
     dispatch(requestProcessData(data))
+    // Can't use axios for requext because we can't turn files into json.
     var oReq = new XMLHttpRequest();
     oReq.open("POST", "api/linear_regression", true);
     oReq.onload = function(oEvent) {
