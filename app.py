@@ -1,4 +1,4 @@
-"""Top level app setup security and database."""
+"""Top level app setup database and csrf protection."""
 
 import os
 from flask import Flask
@@ -9,9 +9,8 @@ from flask.ext.sqlalchemy import SQLAlchemy
 app = Flask(__name__, static_folder='client', static_url_path='/client')
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
 CsrfProtect(app)
-
+db = SQLAlchemy(app)
 
 @app.after_request
 def add_csrf_cookie(response):

@@ -1,5 +1,5 @@
 """API routes for external users."""
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, abort, request, jsonify
 import numpy
 import pandas
 from models.contact import Contact
@@ -7,6 +7,13 @@ from riderml.regression.SGD_regressor import SGD_regressor
 
 
 api = Blueprint('api', __name__)
+
+
+@api.before_request
+def check_xssi():
+    """Protects API from cross site script inclusion."""
+    token = request.headers.get('X-Rider-AI')
+    if not token or token != '1': abort(403)
 
 
 @api.route('/contact', methods=['POST'])

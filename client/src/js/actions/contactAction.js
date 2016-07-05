@@ -23,7 +23,11 @@ export function addContact(payload, success, failure) {
   return dispatch => {
     dispatch(requestAddContact(payload))
     return post('/api/contact', payload, {
-        headers: {'Content-type': 'application/json', 'X-CSRFToken': getCsrf()}
+        headers: {
+          'Content-type': 'application/json',
+          'X-CSRFToken': getCsrf(),
+          'X-Rider-AI': 1
+        }
       })
       .then((response) => {
         dispatch(confirmAddContact(response))

@@ -26,6 +26,7 @@ export function processData(data) {
     var oReq = new XMLHttpRequest();
     oReq.open('POST', 'api/linear_regression', true);
     oReq.setRequestHeader('X-CSRFToken', getCsrf())
+    oReq.setRequestHeader('X-Rider-AI', 1)
     oReq.onload = function(oEvent) {
       if (oReq.status == 200) {
         const answer = JSON.parse(oReq.response)
