@@ -87,6 +87,14 @@ class APITestCase(unittest.TestCase):
                                          data=data)
         self.assertEqual(response.status_code, 400)
 
+    def test_invalid_file_type_linear_regression(self):
+        data = {'learn': open('tests/assets/iris.csv'),
+                'predict': open('tests/assets/spacecat.jpg')}
+        response = self.test_client.post('/api/linear_regression',
+                                         headers={'X-Rider-AI': 1},
+                                         data=data)
+        self.assertEqual(response.status_code, 400)
+
 
 if __name__ == '__main__':
     unittest.main()

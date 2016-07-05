@@ -22,6 +22,9 @@ export default class FileInput extends Component {
   onChange() {
     const { id, addFile, maxFileSize } = this.props
     const file = this.refs[id].files[0]
+    if (file.type !== "text/csv") {
+      return this.setState({errorText: "File must be CSV"})
+    }
     if (file.size > maxFileSize) {
       return this.setState({errorText: "File size exceeds 1MB limit."})
     } else {

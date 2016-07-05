@@ -7,6 +7,7 @@ from riderml.regression.SGD_regressor import SGD_regressor
 
 
 api = Blueprint('api', __name__)
+ALLOWED_EXTENSIONS = set(['csv'])
 
 
 @api.before_request
@@ -53,15 +54,17 @@ def linear_regression():
     returns:
         the y values of the prediction as a 2d array on success.
     """
-    learn = pandas.read_csv(request.files['learn'])
+    learn_file = request.files['learn']
+    predict_file = request.files['predict']
+    if not validate_file(learn_file) or not validate_file(predict_file):
+        return jsonify({"error": "Invalid file type or size"}), 400
+
+    learn = pandas.read_csv(learn_file)
     learn_headers = set(learn.columns.values)
-
-    predict = pandas.read_csv(request.files['predict'])
+    predict = pandas.read_csv(predict_file)
     predict_headers = set(predict.columns.values)
-
     x_columns = learn_headers & predict_headers
     y_columns = learn_headers - predict_headers
-
     if not x_columns or not y_columns:
         return jsonify({"error": "You must have both x and y columns."}), 400
 
@@ -83,3 +86,10 @@ def linear_regression():
                     "x_results": predict_x,
                     "y_fields": list(y_columns),
                     "x_fields": list(x_columns)})
+
+
+def validate_file(file_to_validate):
+    _, file_type = file_to_validate.filename.split(".")
+    file_size = file_to_validate.content_length
+
+    return file_type.lower() == "csv" and file_size <= 1000000
