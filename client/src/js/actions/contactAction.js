@@ -1,4 +1,5 @@
 import { post } from 'axios'
+import { getCsrf } from '../utilities/ajax'
 
 export const REQUEST_ADD_CONTACT = 'REQUEST_ADD_CONTACT'
 export const CONFIRM_ADD_CONTACT = 'CONFIRM_ADD_CONTACT'
@@ -22,7 +23,7 @@ export function addContact(payload, success, failure) {
   return dispatch => {
     dispatch(requestAddContact(payload))
     return post('/api/contact', payload, {
-        headers: {'Content-type': 'application/json'}
+        headers: {'Content-type': 'application/json', 'X-CSRFToken': getCsrf()}
       })
       .then((response) => {
         dispatch(confirmAddContact(response))
