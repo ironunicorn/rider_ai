@@ -1,5 +1,4 @@
 """Top level app setup database and csrf protection."""
-
 import os
 from flask import Flask
 from flask_wtf.csrf import CsrfProtect
@@ -11,6 +10,7 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 CsrfProtect(app)
 db = SQLAlchemy(app)
+
 
 @app.after_request
 def add_csrf_cookie(response):

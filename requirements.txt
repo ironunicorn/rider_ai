@@ -1,4 +1,6 @@
 alembic==0.8.6
+bcrypt==3.1.0
+cffi==1.7.0
 cycler==0.10.0
 Flask==0.10.1
 Flask-Migrate==1.8.0
@@ -13,6 +15,7 @@ matplotlib==1.5.1
 numpy==1.11.0
 pandas==0.18.1
 psycopg2==2.6.1
+pycparser==2.14
 pyparsing==2.1.5
 python-dateutil==2.5.3
 python-editor==1.0
