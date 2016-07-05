@@ -1,5 +1,5 @@
 import {
-  REQUEST_PROCESS_DATA, RECEIVE_DATA_RESULT
+  REQUEST_PROCESS_DATA, RECEIVE_DATA_RESULT, RESET_DATA
 } from '../actions/mlAction'
 
 function machineLearning(state = {
@@ -18,6 +18,11 @@ function machineLearning(state = {
         learning: false,
         result: action.result,
         lastUpdated: action.receivedAt
+      })
+    case RESET_DATA:
+      return Object.assign({}, state, {
+        learning: false,
+        result: {},
       })
     default:
       return state

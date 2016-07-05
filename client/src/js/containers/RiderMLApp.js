@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { processData } from '../actions/mlAction'
+import { processData, resetData } from '../actions/mlAction'
 import CircularProgress from 'material-ui/CircularProgress'
 import FileUploadWizard from '../components/FileUploadWizard'
 import LinearVisualization from '../components/LinearVisualization'
@@ -15,6 +15,11 @@ class RiderMLApp extends Component {
     dispatch(processData(formData))
   }
 
+  handleReset() {
+    const { dispatch } = this.props
+    dispatch(resetData())
+  }
+
   render() {
     const {learning, result} = this.props
     if (learning) {
@@ -24,7 +29,10 @@ class RiderMLApp extends Component {
         </div>
       )
     } else if (Object.keys(result).length) {
-      return <LinearVisualization result={result} />
+      return (
+        <LinearVisualization result={result}
+                             handleReset={this.handleReset.bind(this)} />
+      )
     } else {
       return <FileUploadWizard handleLearn={this.handleLearn.bind(this)}/>
     }

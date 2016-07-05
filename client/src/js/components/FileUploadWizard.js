@@ -58,6 +58,7 @@ export default class FileUploadWizard extends Component {
         return (
           <div>
             <FileInput id="learn"
+                       maxFileSize={1000000}
                        fileName={this.state.learn}
                        addFields={this.addFields.bind(this, "learnHeaders")}
                        addFile={this.addFile.bind(this)} />
@@ -80,6 +81,7 @@ export default class FileUploadWizard extends Component {
         return (
           <div>
             <FileInput id="predict"
+                       maxFileSize={1000000}
                        fileName={this.state.predict}
                        addFields={this.addFields.bind(this, "predictHeaders")}
                        addFile={this.addFile.bind(this)} />

@@ -1,5 +1,6 @@
 export const REQUEST_PROCESS_DATA = 'REQUEST_PROCESS_DATA'
 export const RECEIVE_DATA_RESULT = 'RECEIVE_DATA_RESULT'
+export const RESET_DATA = 'RESET_DATA'
 
 function requestProcessData(data) {
   return {
@@ -32,5 +33,11 @@ export function processData(data) {
     };
 
     oReq.send(data)
+  }
+}
+
+export function resetData() {
+  return {
+    type: RESET_DATA
   }
 }
