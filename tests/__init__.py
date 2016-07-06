@@ -1,2 +1,0 @@
-def RunTests():
-    pass

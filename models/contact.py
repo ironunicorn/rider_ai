@@ -18,12 +18,14 @@ class Contact(db.Model):
         assert address is not None
         assert address is not ""
         assert '@' in address
+
         return address
 
     @validates('name', 'message')
     def validate_not_empty(self, key, field):
         assert field is not None
         assert field is not ""
+        
         return field
 
     def __repr__(self):

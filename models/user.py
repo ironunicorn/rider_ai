@@ -1,4 +1,4 @@
-"""Model for messages submitted by users."""
+"""Model for admins. Made flexible for other users later."""
 import bcrypt
 import uuid
 from app import db
@@ -20,7 +20,6 @@ class User(db.Model):
     def find_by_credentials(cls, email_address, password):
         user = cls.query.filter(cls.email_address==email_address).first()
         if user and user.check_password(password):
-
             return user
 
     @classmethod
@@ -32,6 +31,7 @@ class User(db.Model):
         assert address is not None
         assert address is not ""
         assert '@' in address
+
         return address
 
     def __init__(self, email_address, password, admin=False):

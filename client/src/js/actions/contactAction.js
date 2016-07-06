@@ -19,6 +19,13 @@ function confirmAddContact(response) {
   }
 }
 
+/**
+ * Sends contact message from form to server.
+ * @param {Object} payload is the data to send:
+ *    {name: string, email_address: string, message: string}
+ * @param {Function} success to call on post's success.
+ * @param {Function} failure to call on post's failure.
+ */
 export function addContact(payload, success, failure) {
   return dispatch => {
     dispatch(requestAddContact(payload))

@@ -9,40 +9,52 @@ admin = Blueprint('admin', __name__)
 
 
 def ensure_admin(func):
-    """Ensures current user is an admin or redirects to login page."""
+    """
+    Decorator for routes that can only be accessed by admins.
+
+    args:
+        func- the function to be protected.
+
+    returns:
+        the called func and its arguments if the user is an admin.
+        Otherwise, redirects to the login page.
+    """
     @wraps(func)
     def ensure_admin_wrapper(*args, **kwargs):
         user = current_user()
         if not user or not user.admin:
-            return redirect(url_for('admin.login'))
-        else:
-            return func(*args, **kwargs)
+            return redirect(url_for('admin.login_page'))
+
+        return func(*args, **kwargs)
 
     return ensure_admin_wrapper
 
 
 def current_user():
-    """Gets user from cache or caches current user."""
+    """Gets user from cache or caches current user found by session token."""
     if not g.get('user'):
-        g.user = User.find_by_session_token(session['session_token'])
+        g.user = User.find_by_session_token(session.get('session_token'))
 
     return g.user
 
 
-@admin.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        user = User.find_by_credentials(request.form['email_address'],
-                                        request.form['password'])
-        if user:
-            session['session_token'] = user.reset_session_token()
-            return redirect(url_for('admin.list_contacts'))
+@admin.route('/login', methods=['POST'])
+def login_post():
+    user = User.find_by_credentials(request.form['email_address'],
+                                    request.form['password'])
+    if not user:
+        errors = 'Invalid credentials. Please try again.'
+        return render_template('admin/login.html', errors=errors)
 
-        return render_template('admin/login.html',
-                               errors='Invalid credentials. Please try again.')
-    else:
+    session['session_token'] = user.reset_session_token()
 
-        return render_template('admin/login.html', errors=None)
+    return redirect(url_for('admin.list_contacts'))
+
+
+@admin.route('/login', methods=['GET'])
+def login_page():
+
+    return render_template('admin/login.html', errors=None)
 
 
 @admin.route('/logout', methods=['POST'])
@@ -53,18 +65,12 @@ def logout():
     user.reset_session_token()
     g.user = None
 
-    return redirect(url_for('admin.login'))
+    return redirect(url_for('admin.login_page'))
 
 
 @admin.route('/contacts', methods=['GET'])
 @ensure_admin
 def list_contacts():
-    """
-    Lists contacts.
-
-    returns:
-        HTML list of contacts.
-    """
     contacts = Contact.query.order_by(Contact.created_timestamp.desc())
 
     return render_template('admin/contacts.html', contacts=contacts)

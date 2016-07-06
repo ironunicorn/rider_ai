@@ -19,7 +19,12 @@ function receiveDataResult(result) {
   }
 }
 
-export function processData(data) {
+/**
+ * Processes uploaded csv files and returns results from the server.
+ * @param {Object} data is the FormData of 'learn' and 'predict' files.
+ * @param {Function} failure is called if server process fails.
+ */
+export function processData(data, failure) {
   return dispatch => {
     dispatch(requestProcessData(data))
     // Can't use axios for requext because we can't turn files into json.
@@ -32,7 +37,9 @@ export function processData(data) {
         const answer = JSON.parse(oReq.response)
         dispatch(receiveDataResult(answer))
       } else {
-        console.log('fail :(')
+        const fail = JSON.parse(oReq.response)
+        dispatch(receiveDataResult({}))
+        failure({failure: fail})
       }
     };
 
@@ -40,6 +47,9 @@ export function processData(data) {
   }
 }
 
+/**
+ * Resets file upload wizard for another analysis.
+ */
 export function resetData() {
   return {
     type: RESET_DATA

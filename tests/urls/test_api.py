@@ -20,7 +20,7 @@ class APITestCase(unittest.TestCase):
 
     def test_contact_post(self):
         contact = {"name": "Irene",
-                   "email_address": "irene.foelschow@gmail.com",
+                   "email_address": "irene@gmail.com",
                    "message": "Hey!"}
         response = self.test_client.post('/api/contact',
                                          data=json.dumps(contact),
@@ -32,7 +32,7 @@ class APITestCase(unittest.TestCase):
 
     def test_xssi(self):
         contact = {"name": "Irene",
-                   "email_address": "irene.foelschow@gmail.com",
+                   "email_address": "irene@gmail.com",
                    "message": "Hey!"}
         response = self.test_client.post('/api/contact',
                                          data=json.dumps(contact),
@@ -41,7 +41,7 @@ class APITestCase(unittest.TestCase):
 
     def test_invalid_contact_post(self):
         contact = {"name": "Irene",
-                   "email_address": "irene.foelschow@gmail.com"}
+                   "email_address": "irene@gmail.com"}
         response = self.test_client.post('/api/contact',
                                          data=json.dumps(contact),
                                          headers={'X-Rider-AI': 1},
@@ -52,7 +52,7 @@ class APITestCase(unittest.TestCase):
 
     def test_invalid_email_contact_post(self):
         contact = {"name": "Irene",
-                   "email_address": "irene.foelschowgmail.com",
+                   "email_address": "irenegmail.com",
                    "message": "Hey!"}
         response = self.test_client.post('/api/contact',
                                          data=json.dumps(contact),

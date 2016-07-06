@@ -7,7 +7,6 @@ from riderml.regression.SGD_regressor import SGD_regressor
 
 
 api = Blueprint('api', __name__)
-ALLOWED_EXTENSIONS = set(['csv'])
 
 
 @api.before_request
@@ -44,48 +43,50 @@ def post_contact():
 @api.route('/linear_regression', methods=['POST'])
 def linear_regression():
     """
-    Applies gradient decsent linear regression algorithm to learn and then
-    predict two given CSV files.
+    Applies gradient descent linear regression algorithm to learn and then
+    predict from two given CSV files.
 
     request body must contain two files as multipart file object:
         learn - the file to learn with.
         predict - the file to make predictions for.
 
     returns:
-        the y values of the prediction as a 2d array on success.
+        A json object with the following fields:
+        {"y_results": y_results,
+         "x_results": second_x.tolist(),
+         "y_fields": difference_columns,
+         "x_fields": intersection_columns}
     """
     learn_file = request.files['learn']
     predict_file = request.files['predict']
-    if not validate_file(learn_file) or not validate_file(predict_file):
-        return jsonify({"error": "Invalid file type or size"}), 400
+    # if not validate_file(learn_file) or not validate_file(predict_file):
+    return jsonify({"error": "Invalid file type or size"}), 400
 
     learn = pandas.read_csv(learn_file)
-    learn_headers = set(learn.columns.values)
+    learn_headers = list(learn.columns.values)
     predict = pandas.read_csv(predict_file)
-    predict_headers = set(predict.columns.values)
-    x_columns = learn_headers & predict_headers
-    y_columns = learn_headers - predict_headers
-    if not x_columns or not y_columns:
+    predict_headers = list(predict.columns.values)
+
+    intersection_columns = list(set(learn_headers) & set(predict_headers))
+    difference_columns = list(set(learn_headers) - set(predict_headers))
+
+    if not intersection_columns or not difference_columns:
         return jsonify({"error": "You must have both x and y columns."}), 400
 
-    x = [learn[column].tolist() for column in x_columns]
-    y = [learn[column].tolist() for column in y_columns]
-
-    x = numpy.array(zip(*x))
-    y = numpy.array(zip(*y))
+    x = learn.xs(intersection_columns, axis=1).as_matrix()
+    y = learn.xs(difference_columns, axis=1).as_matrix()
 
     sgd_regressor = SGD_regressor()
     sgd_regressor.fit(x, y, 100)
 
-    predict_x = zip(*[predict[column].tolist() for column in x_columns])
-    second_x = numpy.array(predict_x)
+    second_x = predict.xs(intersection_columns, axis=1).as_matrix()
 
     y_results = sgd_regressor.predict(second_x).tolist()
 
     return jsonify({"y_results": y_results,
-                    "x_results": predict_x,
-                    "y_fields": list(y_columns),
-                    "x_fields": list(x_columns)})
+                    "x_results": second_x.tolist(),
+                    "y_fields": difference_columns,
+                    "x_fields": intersection_columns})
 
 
 def validate_file(file_to_validate):

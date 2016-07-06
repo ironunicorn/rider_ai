@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react'
-import { Step, Stepper, StepLabel } from 'material-ui/Stepper'
-import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
+import RaisedButton from 'material-ui/RaisedButton'
+import Snackbar from 'material-ui/Snackbar'
+import { Step, Stepper, StepLabel } from 'material-ui/Stepper'
 import FileInput from '../components/FileInput'
 import FieldBreakdown from '../components/FieldBreakdown'
 
@@ -13,7 +14,8 @@ export default class FileUploadWizard extends Component {
       learn: "",
       predict: "",
       learnHeaders: [],
-      predictHeaders: []
+      predictHeaders: [],
+      failure: false
     }
     this.formData = new FormData()
   }
@@ -134,7 +136,7 @@ export default class FileUploadWizard extends Component {
   }
 
   render() {
-    const {stepIndex} = this.state
+    const {stepIndex, failure} = this.state
     const contentStyle = {margin: '0 16px'}
 
     return (
@@ -153,6 +155,12 @@ export default class FileUploadWizard extends Component {
         <div style={contentStyle}>
           <div>{this.getStepContent(stepIndex)}</div>
         </div>
+        <Snackbar
+          open={failure}
+          message={failure ? failure.error : ''}
+          autoHideDuration={3000}
+          onRequestClose={this.setState.bind(this, {failure: false})}
+        />
       </div>
     )
   }

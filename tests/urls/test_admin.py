@@ -1,5 +1,5 @@
-import unittest
 import json
+import unittest
 from app import app, db
 from urls.admin import admin
 from models.contact import Contact
