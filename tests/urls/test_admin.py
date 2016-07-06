@@ -14,7 +14,7 @@ class AdminTestCase(unittest.TestCase):
         self.db = db
         self.db.create_all()
         contact = Contact(name="Irene",
-                          email_address="irene.foelschow@gmail.com",
+                          email_address="irene@gmail.com",
                           message="Hi")
         contact.save()
 
@@ -24,6 +24,7 @@ class AdminTestCase(unittest.TestCase):
         self.db.get_engine(self.app).dispose()
 
     def test_contact_list(self):
+
         response = self.test_client.get('/admin/contacts')
         assert "Irene" in response.data
 
