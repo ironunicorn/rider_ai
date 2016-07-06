@@ -5,6 +5,10 @@
     <title>Rider AI Admin | Contacts</title>
   </head>
   <body>
+    <form action="{{ url_for('admin.logout') }}" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <input type=submit value=Logout>
+    </form>
     <h1>Messages</h1>
     <ul>
     {% for contact in contacts %}
