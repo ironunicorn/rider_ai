@@ -4,6 +4,7 @@ import {
 
 function machineLearning(state = {
   learning: false,
+  failure: '',
   data: {},
   result: {}
 }, action) {
@@ -11,18 +12,21 @@ function machineLearning(state = {
     case REQUEST_PROCESS_DATA:
       return Object.assign({}, state, {
         learning: true,
-        data: action.data
+        data: action.data,
+        failure: false
       })
     case RECEIVE_DATA_RESULT:
       return Object.assign({}, state, {
         learning: false,
         result: action.result,
-        lastUpdated: action.receivedAt
+        lastUpdated: action.receivedAt,
+        failure: action.failure
       })
     case RESET_DATA:
       return Object.assign({}, state, {
         learning: false,
         result: {},
+        failure: ''
       })
     default:
       return state

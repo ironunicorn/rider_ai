@@ -11,10 +11,11 @@ function requestProcessData(data) {
   }
 }
 
-function receiveDataResult(result) {
+function receiveDataResult(result, failure) {
   return {
     type: RECEIVE_DATA_RESULT,
     result,
+    failure,
     receivedAt: Date.now()
   }
 }
@@ -24,7 +25,7 @@ function receiveDataResult(result) {
  * @param {Object} data is the FormData of 'learn' and 'predict' files.
  * @param {Function} failure is called if server process fails.
  */
-export function processData(data, failure) {
+export function processData(data) {
   return dispatch => {
     dispatch(requestProcessData(data))
     // Can't use axios for requext because we can't turn files into json.
@@ -35,11 +36,10 @@ export function processData(data, failure) {
     oReq.onload = function(oEvent) {
       if (oReq.status == 200) {
         const answer = JSON.parse(oReq.response)
-        dispatch(receiveDataResult(answer))
+        dispatch(receiveDataResult(answer, ''))
       } else {
-        const fail = JSON.parse(oReq.response)
-        dispatch(receiveDataResult({}))
-        failure({failure: fail})
+        const fail = JSON.parse(oReq.response).error
+        dispatch(receiveDataResult({}, fail))
       }
     };
 

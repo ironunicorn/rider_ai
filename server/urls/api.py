@@ -59,8 +59,8 @@ def linear_regression():
     """
     learn_file = request.files['learn']
     predict_file = request.files['predict']
-    # if not validate_file(learn_file) or not validate_file(predict_file):
-    return jsonify({"error": "Invalid file type or size"}), 400
+    if not validate_file(learn_file) or not validate_file(predict_file):
+        return jsonify({"error": "Invalid file type or size"}), 400
 
     learn = pandas.read_csv(learn_file)
     learn_headers = list(learn.columns.values)
