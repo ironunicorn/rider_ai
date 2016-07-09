@@ -1,0 +1,5 @@
+venv
+node_modules
+sample_data_maker.py
+**/*.pyc
+config.py

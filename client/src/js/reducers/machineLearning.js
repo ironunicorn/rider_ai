@@ -13,7 +13,7 @@ function machineLearning(state = {
       return Object.assign({}, state, {
         learning: true,
         data: action.data,
-        failure: false
+        failure: ''
       })
     case RECEIVE_DATA_RESULT:
       return Object.assign({}, state, {

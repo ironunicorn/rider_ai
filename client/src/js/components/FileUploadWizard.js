@@ -42,7 +42,8 @@ export default class FileUploadWizard extends Component {
   }
 
   addFields(name, headers) {
-    const toChange = {}
+    const {stepIndex} = this.state
+    const toChange = {stepIndex: stepIndex + 1}
     toChange[name] = headers
     this.setState(toChange)
   }
@@ -141,13 +142,13 @@ export default class FileUploadWizard extends Component {
       <div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
         <Stepper activeStep={stepIndex} linear={false} >
           <Step>
-            <StepLabel>Choose data to learn from</StepLabel>
+            <StepLabel>Choose a training data set</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Choose data with missing dimensions to predict</StepLabel>
+            <StepLabel>Choose a testing data set (one with missing column(s))</StepLabel>
           </Step>
           <Step>
-            <StepLabel>Process!</StepLabel>
+            <StepLabel>Train and Predict!</StepLabel>
           </Step>
         </Stepper>
         <div style={contentStyle}>
