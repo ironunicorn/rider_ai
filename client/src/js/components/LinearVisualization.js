@@ -42,11 +42,9 @@ export default class LinearVisualization extends Component {
         height = 500 - margin.top - margin.bottom
 
     let x = d3.scaleLinear().range([0, width])
-
     let y = d3.scaleLinear().range([height, 0])
 
     let xAxis = d3.axisBottom().scale(x)
-
     let yAxis = d3.axisLeft().scale(y)
 
     let line = d3.line().x((d) => x(d.x)).y((d) => y(d.y))

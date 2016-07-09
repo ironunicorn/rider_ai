@@ -1,6 +1,6 @@
 """Admin routes for owner(s)."""
 from functools import wraps
-from flask import Blueprint, g, render_template, request, session, redirect, url_for
+from flask import Blueprint, g, redirect, render_template, request, session,  url_for
 from models.contact import Contact
 from models.user import User
 
