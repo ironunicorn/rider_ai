@@ -1,6 +1,6 @@
 """Top level app setup database and csrf protection."""
 import os
-from flask import Flask
+from flask import Flask, jsonify
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.sqlalchemy import SQLAlchemy
 
@@ -19,3 +19,29 @@ def add_csrf_cookie(response):
                         value=app.jinja_env.globals['csrf_token']())
 
     return response
+
+
+"""Shared database error handlers."""
+class IntegrityError(Exception):
+    pass
+
+class AssertionError(Exception):
+    pass
+
+class InvalidRequestError(Exception):
+    pass
+
+
+@app.errorhandler(IntegrityError)
+def integrity_error(error):
+    return jsonify({"error": str(error)}), 422
+
+
+@app.errorhandler(AssertionError)
+def assertion_error(error):
+    return jsonify({"error": str(error)}), 422
+
+
+@app.errorhandler(InvalidRequestError)
+def assertion_error(error):
+    return jsonify({"error": str(error)}), 503

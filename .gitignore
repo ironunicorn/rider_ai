@@ -4,3 +4,5 @@ sample_data_maker.py
 **/*.pyc
 config.py
 bundle.js
+Dockerfile
+setup.sh

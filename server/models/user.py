@@ -57,14 +57,10 @@ class User(db.Model):
 
     def save(self):
         self.ensure_session_token()
-        success = True
-        try:
-            db.session.add(self)
-            db.session.commit()
-        except:
-            success = False
+        db.session.add(self)
+        db.session.commit()
 
-        return success
+        return self.id
 
 def generate_session_token():
     return uuid.uuid4().hex

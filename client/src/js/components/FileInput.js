@@ -46,7 +46,7 @@ export default class FileInput extends Component {
           ref={id}
           className="inputfile"
           onChange={this.onChange.bind(this)}/>
-        <label htmlFor={id} >
+        <label htmlFor={id} className="clear-fix">
           <RaisedButton
             label={fileName ? "Edit" : "Upload"}
             secondary={true}

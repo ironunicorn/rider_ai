@@ -25,18 +25,14 @@ class Contact(db.Model):
     def validate_not_empty(self, key, field):
         assert field is not None
         assert field is not ""
-        
+
         return field
 
     def __repr__(self):
         return '<id {}, name {}>'.format(self.id, self.name)
 
     def save(self):
-        success = True
-        try:
-            db.session.add(self)
-            db.session.commit()
-        except:
-            success = False
+        db.session.add(self)
+        db.session.commit()
 
-        return success
+        return self.id

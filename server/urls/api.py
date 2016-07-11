@@ -30,14 +30,10 @@ def post_contact():
         json success or failure plus corresponding http status.
     """
     contact_request = request.get_json()
-    try:
-        contact = Contact(**contact_request)
-        success = contact.save()
-    except:
-        success = False
-    status = 200 if success else 500
+    contact = Contact(**contact_request)
+    success = contact.save()
 
-    return jsonify({"success": success}), status
+    return jsonify({"contact": contact.id})
 
 
 @api.route('/linear_regression', methods=['POST'])
@@ -60,7 +56,7 @@ def linear_regression():
     learn_file = request.files['learn']
     predict_file = request.files['predict']
     if not validate_file(learn_file) or not validate_file(predict_file):
-        return jsonify({"error": "Invalid file type or size"}), 400
+        raise InvalidDataError("Invalid file type or size")
 
     learn = pandas.read_csv(learn_file)
     learn_headers = list(learn.columns.values)
@@ -71,7 +67,8 @@ def linear_regression():
     difference_columns = list(set(learn_headers) - set(predict_headers))
 
     if not intersection_columns or not difference_columns:
-        return jsonify({"error": "You must have both x and y columns."}), 400
+        invalid_columns = "You must have both matching and missing columns."
+        raise InvalidDataError(invalid_columns)
 
     x = learn.xs(intersection_columns, axis=1).as_matrix()
     y = learn.xs(difference_columns, axis=1).as_matrix()
@@ -94,3 +91,12 @@ def validate_file(file_to_validate):
     file_size = file_to_validate.content_length
 
     return file_type.lower() == "csv" and file_size <= 1000000
+
+
+class InvalidDataError(Exception):
+    pass
+
+
+@api.errorhandler(InvalidDataError)
+def integrity_error(error):
+    return jsonify({"error": str(error)}), 422

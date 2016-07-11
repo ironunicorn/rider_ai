@@ -123,7 +123,7 @@ export default class FileUploadWizard extends Component {
               <RaisedButton
                 label="Learn"
                 primary={true}
-                disabled={!toLearn.length}
+                disabled={!toLearn.length || !toPredict.length}
                 onTouchTap={this.handleSubmit.bind(this)}
               />
             </div>
@@ -131,6 +131,7 @@ export default class FileUploadWizard extends Component {
         )
       default:
         return 'Ack! Too far!'
+
     }
   }
 

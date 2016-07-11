@@ -9,6 +9,16 @@ body {
   position: relative;
 }
 
+.clear-fix {
+  display: inline-block;
+}
+
+.clear-fix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
 .contact-button {
   position: absolute;
   bottom: 5px;
