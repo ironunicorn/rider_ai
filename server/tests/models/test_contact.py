@@ -1,6 +1,7 @@
 import unittest
 from app import app, db
 from models.contact import Contact
+from sqlalchemy.exc import IntegrityError
 
 
 class ContactTestCase(unittest.TestCase):
@@ -24,18 +25,16 @@ class ContactTestCase(unittest.TestCase):
 
     def test_contact_invalid_email_address(self):
         with self.assertRaises(AssertionError):
-            contact = Contact(name="Irene",
-                              email_address="irene.foelschowgmail.com",
-                              message="Hey.")
+            Contact(name="Irene",
+                    email_address="irene.foelschowgmail.com",
+                    message="Hey.")
 
     def test_contact_invalid_null_field(self):
-        contact = Contact(name="Irene",
-                          message="Hey.")
-        self.assertFalse(contact.save())
-        other_contact = Contact(name="Irene",
-                                email_address="irene.foelschow@gmail.com")
-        self.assertFalse(other_contact.save())
+        contact = Contact(name="Irene",message="Hey.")
+        with self.assertRaises(IntegrityError):
+            contact.save()
 
+        self.assertIsNone(contact.id)
 
 
 if __name__ == '__main__':

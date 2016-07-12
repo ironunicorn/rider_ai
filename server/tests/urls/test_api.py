@@ -28,7 +28,7 @@ class APITestCase(unittest.TestCase):
                                          content_type='application/json')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
-        self.assertTrue(data["success"])
+        self.assertIn("contact", data)
 
     def test_xssi(self):
         contact = {"name": "Irene",
@@ -46,21 +46,22 @@ class APITestCase(unittest.TestCase):
                                          data=json.dumps(contact),
                                          headers={'X-Rider-AI': 1},
                                          content_type='application/json')
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 422)
         data = json.loads(response.data)
-        self.assertFalse(data["success"])
+        self.assertIn("error", data)
 
     def test_invalid_email_contact_post(self):
         contact = {"name": "Irene",
                    "email_address": "irenegmail.com",
                    "message": "Hey!"}
-        response = self.test_client.post('/api/contact',
-                                         data=json.dumps(contact),
-                                         headers={'X-Rider-AI': 1},
-                                         content_type='application/json')
-        self.assertEqual(response.status_code, 500)
-        data = json.loads(response.data)
-        self.assertFalse(data["success"])
+        with self.assertRaises(AssertionError):
+            response = self.test_client.post('/api/contact',
+                                             data=json.dumps(contact),
+                                             headers={'X-Rider-AI': 1},
+                                             content_type='application/json')
+            self.assertEqual(response.status_code, 422)
+            data = json.loads(response.data)
+            self.assertIn("error", data)
 
     def test_linear_regression(self):
         data = {'learn': open('tests/assets/iris.csv'),
@@ -77,7 +78,7 @@ class APITestCase(unittest.TestCase):
         response = self.test_client.post('/api/linear_regression',
                                          headers={'X-Rider-AI': 1},
                                          data=data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 422)
 
     def test_no_mismatched_headers_linear_regression(self):
         data = {'learn': open('tests/assets/iris.csv'),
@@ -85,7 +86,7 @@ class APITestCase(unittest.TestCase):
         response = self.test_client.post('/api/linear_regression',
                                          headers={'X-Rider-AI': 1},
                                          data=data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 422)
 
     def test_invalid_file_type_linear_regression(self):
         data = {'learn': open('tests/assets/iris.csv'),
@@ -93,7 +94,7 @@ class APITestCase(unittest.TestCase):
         response = self.test_client.post('/api/linear_regression',
                                          headers={'X-Rider-AI': 1},
                                          data=data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 422)
 
 
 if __name__ == '__main__':

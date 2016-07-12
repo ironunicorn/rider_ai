@@ -3,6 +3,7 @@ import os
 from flask import Flask, jsonify
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
 
 
 app = Flask(__name__, static_folder='client', static_url_path='/client')
@@ -22,9 +23,6 @@ def add_csrf_cookie(response):
 
 
 """Shared database error handlers."""
-class IntegrityError(Exception):
-    pass
-
 class AssertionError(Exception):
     pass
 
