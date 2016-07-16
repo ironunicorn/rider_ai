@@ -33,7 +33,6 @@ class ContactTestCase(unittest.TestCase):
         contact = Contact(name="Irene",message="Hey.")
         with self.assertRaises(IntegrityError):
             contact.save()
-
         self.assertIsNone(contact.id)
 
 

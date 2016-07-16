@@ -22,7 +22,7 @@ def add_csrf_cookie(response):
     return response
 
 
-"""Shared database error handlers."""
+"""Shared model error handlers."""
 class AssertionError(Exception):
     pass
 

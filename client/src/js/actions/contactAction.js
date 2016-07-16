@@ -14,8 +14,7 @@ function requestAddContact(payload) {
 function confirmAddContact(response) {
   return {
     type: CONFIRM_ADD_CONTACT,
-    response,
-    receivedAt: Date.now()
+    response
   }
 }
 

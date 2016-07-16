@@ -5,8 +5,12 @@ import RaisedButton from 'material-ui/RaisedButton'
 export default class ContactForm extends Component {
   constructor(props) {
     super(props)
+    const payload = Object.assign(
+      {name: '', email_address: '', message: ''},
+      this.props.payload
+    )
     this.state = {
-      payload: {name: '', email_address: '', message: ''},
+      payload,
       errors: {name: [], email_address: [], message: [] }
     }
   }
@@ -57,22 +61,26 @@ export default class ContactForm extends Component {
   }
 
   render() {
+    const {payload} = this.state
     return (
       <div>
         <TextField
           hintText="Name"
+          value={payload.name}
           fullWidth={true}
           errorText={this.state.errors.name.join(' ')}
           onChange={e => {this.handleChange({name: e.target.value})}}
         /><br />
         <TextField
           hintText="Email Address"
+          value={payload.email_address}
           fullWidth={true}
           errorText={this.state.errors.email_address.join(' ')}
           onChange={e => {this.handleChange({email_address: e.target.value})}}
         />
         <TextField
           floatingLabelText="Message"
+          value={payload.message}
           fullWidth={true}
           multiLine={true}
           rows={2}

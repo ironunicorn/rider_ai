@@ -70,19 +70,17 @@ class ContactApp extends Component {
 ContactApp.propTypes = {
   payload: PropTypes.object.isRequired,
   isPosting: PropTypes.bool.isRequired,
-  lastUpdated: PropTypes.number,
   dispatch: PropTypes.func.isRequired
 }
 
 function mapStateToProps(state) {
-  const { payload, isPosting, lastUpdated } = state.contact || {
+  const { payload, isPosting } = state.contact || {
     payload: {},
-    isPosting: false,
+    isPosting: false
   }
   return {
     payload,
-    isPosting,
-    lastUpdated,
+    isPosting
   }
 }
 
