@@ -1,11 +1,11 @@
+import axios from 'axios'
+import MockAdapter from 'axios-mock-adapter'
+import {expect} from 'chai'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import {expect} from 'chai'
 import sinon from 'sinon'
-import * as actions from '../../src/js/actions/contactAction'
-import axios from 'axios'
 import * as ajax from '../../src/js/utilities/ajax'
-import MockAdapter from 'axios-mock-adapter'
+import * as actions from '../../src/js/actions/contactAction'
 
 
 const mock = new MockAdapter(axios)
