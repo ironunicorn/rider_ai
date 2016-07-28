@@ -1,6 +1,7 @@
 body {
   margin: 0;
   padding: 0;
+  background-color: rgba(57, 31, 31, 0.05);
 }
 
 #root {
@@ -11,6 +12,10 @@ body {
 
 .clear-fix {
   display: inline-block;
+}
+
+.center {
+  text-align: center;
 }
 
 .clear-fix:after {
@@ -58,4 +63,31 @@ body {
   fill: none;
   stroke: steelblue;
   stroke-width: 1.5px;
+}
+
+.graph-card {
+  background-color: white;
+  margin: 45px auto;
+  padding: 20px;
+  text-align: center;
+  width: 750px;
+  position: relative;
+}
+
+.x-axis-label {
+  position: absolute;
+  top: 89%;
+  left: 0;
+  right: 0;
+}
+
+.y-axis-label {
+  position: absolute;
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  transform: rotate(270deg);
+  top: 50%;
+  left: 32px;
 }
